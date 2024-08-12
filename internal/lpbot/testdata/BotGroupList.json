@@ -1,0 +1,112 @@
+{
+    "success": true,
+    "successResult": {
+        "data": [
+            {
+                "botGroupId": "929bd5a6-6b0f-472f-a351-7f10402bbeb2",
+                "botGroupName": "BotGroup1",
+                "transferMessage": null,
+                "channel": "MESSAGING",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            },
+            {
+                "botGroupId": "b42574a0-a462-4faf-95fe-1cb0015ea6ae",
+                "botGroupName": "BotGroup2",
+                "transferMessage": null,
+                "channel": "MESSAGING",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            },
+            {
+                "botGroupId": "c5aa609d-1ccc-412e-a6f5-4ebc8d19ed9d",
+                "botGroupName": "Consensys",
+                "transferMessage": null,
+                "channel": "MESSAGING",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            },
+            {
+                "botGroupId": "1105d1e4-39ec-4c15-a30b-5bb9e57db94e",
+                "botGroupName": "Prod",
+                "transferMessage": null,
+                "channel": "MESSAGING",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            },
+            {
+                "botGroupId": "cc4fc3e8-d8fe-4b65-a47c-72052e713e54",
+                "botGroupName": "STG",
+                "transferMessage": null,
+                "channel": "MESSAGING",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            },
+            {
+                "botGroupId": "210cba4c-7a16-407e-bd8e-716f0af4ae2c",
+                "botGroupName": "VoiceBot",
+                "transferMessage": null,
+                "channel": "VOICE",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            },
+            {
+                "botGroupId": "78b8f927-38cb-4659-a586-d0eac3f330b3",
+                "botGroupName": "Wei templates",
+                "transferMessage": null,
+                "channel": "MESSAGING",
+                "organizationId": null,
+                "collaborationEnabled": false,
+                "numberOfBots": 0,
+                "createdAt": 0,
+                "updatedAt": 0,
+                "createdBy": null,
+                "createdByName": null,
+                "updatedBy": null,
+                "updatedByName": null
+            }
+        ]
+    }
+}

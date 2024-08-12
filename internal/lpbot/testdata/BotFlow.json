@@ -1,0 +1,183 @@
+{
+  "hash": "2111217541",
+  "bot": {
+    "id": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+    "name": "BotFlow",
+    "chatBotType": "CUSTOMER_FACING_BOT",
+    "status": "NEW",
+    "getStartedButtonPayload": "hi",
+    "creationTime": 1723248804619,
+    "modificationTime": 1723248804619,
+    "demo": false,
+    "skipNLP": false,
+    "language": "en-US",
+    "botAttributes": {
+      "ENABLE_DEBUG": "true",
+      "SMALL_TALK_ENABLED": "false"
+    },
+    "sessionLength": 0,
+    "passThroughMode": false,
+    "transcriptDisabled": false,
+    "version": "2",
+    "publicBot": false,
+    "transferGroupId": "cc4fc3e8-d8fe-4b65-a47c-72052e713e54",
+    "channel": "MESSAGING",
+    "readOnly": false,
+    "smallTalkEnabled": false
+  },
+  "responder": [],
+  "requiredContext": [],
+  "conversationMessage": [
+    {
+      "id": "5c7fdcf600d9ddbcbc56b60031bf65bec9de253b",
+      "chatBotId": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+      "userInputRequired": false,
+      "name": "fallback_starter",
+      "type": "BOT_MESSAGE",
+      "content": {
+        "contentType": "STATIC",
+        "results": {
+          "type": "TEXT",
+          "tile": {
+            "tileData": [
+              {
+                "text": "Sorry, I am not able to understand.",
+                "buttons": [],
+                "quickReplyList": []
+              }
+            ]
+          }
+        }
+      },
+      "group": "b31a6e90-8dfc-4872-862a-35ac85e88966",
+      "status": "ACTIVE",
+      "responseMatches": [
+        {
+          "conditions": [],
+          "contextConditions": [],
+          "action": {
+            "name": "INTERACTION",
+            "value": "next"
+          },
+          "contextDataVariables": []
+        }
+      ],
+      "interactionType": "TEXT"
+    },
+    {
+      "id": "7450135e679558cee81370e271dc44c5b89dd19b",
+      "chatBotId": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+      "userInputRequired": false,
+      "name": "text_message",
+      "type": "BOT_MESSAGE",
+      "content": {
+        "contentType": "STATIC",
+        "results": {
+          "type": "TEXT",
+          "tile": {
+            "tileData": [
+              {
+                "text": "Hi there! Thanks for coming!",
+                "buttons": [],
+                "quickReplyList": []
+              }
+            ]
+          }
+        }
+      },
+      "group": "c8e5d31e-42f4-4155-989e-d3f16ee36f15",
+      "status": "ACTIVE",
+      "prevMessageId": "7942ccd028d5d1a2de30c5269dc88ee8993a771d",
+      "responseMatches": [
+        {
+          "conditions": [],
+          "contextConditions": [],
+          "action": {
+            "name": "INTERACTION",
+            "value": "next"
+          },
+          "contextDataVariables": []
+        }
+      ],
+      "interactionType": "TEXT"
+    },
+    {
+      "id": "7942ccd028d5d1a2de30c5269dc88ee8993a771d",
+      "chatBotId": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+      "userInputRequired": false,
+      "name": "dialog_starter",
+      "pattern": [
+        "hi",
+        "hello",
+        "howdy",
+        "(hi|hello|hey)*"
+      ],
+      "type": "BOT_MESSAGE",
+      "content": {
+        "contentType": "STATIC",
+        "results": {
+          "type": "TEXT",
+          "tile": {
+            "tileData": [
+              {
+                "text": "Hello!!",
+                "buttons": [],
+                "quickReplyList": []
+              }
+            ]
+          }
+        }
+      },
+      "preProcessMessage": "var d = new Date(); \nif (botContext.getBotVariable('lastVisited') != null) { \n    botContext.setTriggerNextMessage('Welcome Back');\n} else { \n    botContext.setBotVariable('lastVisited',d,false,true); \n}",
+      "group": "c8e5d31e-42f4-4155-989e-d3f16ee36f15",
+      "status": "ACTIVE",
+      "nextMessageId": "7450135e679558cee81370e271dc44c5b89dd19b",
+      "responseMatches": [
+        {
+          "conditions": [],
+          "contextConditions": [],
+          "action": {
+            "name": "INTERACTION",
+            "value": "next"
+          },
+          "contextDataVariables": []
+        }
+      ],
+      "interactionType": "DIALOG_STARTER"
+    }
+  ],
+  "menus": [],
+  "groups": [
+    {
+      "chatBotId": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+      "id": "b31a6e90-8dfc-4872-862a-35ac85e88966",
+      "name": "2 Fallback",
+      "creationTime": "2024-08-09 20:13:24",
+      "modificationTime": "2024-08-09 20:13:24",
+      "dialogType": "FALLBACK_DIALOG",
+      "status": "ENABLED",
+      "disambiguteOnlySelectedDomains": false
+    },
+    {
+      "chatBotId": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+      "id": "c8e5d31e-42f4-4155-989e-d3f16ee36f15",
+      "name": "1 Welcome",
+      "creationTime": "2024-08-09 20:13:24",
+      "modificationTime": "2024-08-09 20:13:24",
+      "dialogType": "DIALOG",
+      "status": "ENABLED",
+      "disambiguteOnlySelectedDomains": false
+    }
+  ],
+  "platforms": [
+    {
+      "id": "7c7500aaf3c25dbf0a884ee6f692ad3303de2bcd",
+      "chatbotId": "b3f30d7f-22b1-4e53-9f43-c3d2f927a3bd",
+      "integrationType": "HTMLCLIENT",
+      "platform": "HTMLCLIENT",
+      "status": "NEW"
+    }
+  ],
+  "associatedDomains": [],
+  "dialogTemplates": []
+}

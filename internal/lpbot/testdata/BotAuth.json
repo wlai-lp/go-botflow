@@ -1,0 +1,117 @@
+{
+    "success": true,
+    "successResult": {
+        "chatBotPlatformUser": {
+            "id": "0645326e65d7467a904b3a0172279b3c",
+            "name": "admin",
+            "email": "wlai@liveperson.com",
+            "firstname": "admin",
+            "userLoginType": "LE_SSO",
+            "userId": "90412079.4364783838",
+            "role": "ADMIN",
+            "orgId": "8c8e49dd-603f-49c3-9a53-7646d20713f4",
+            "status": "ACTIVE",
+            "creationTime": "2024-01-30 16:32:03",
+            "modificationTime": "2024-01-30 16:32:03",
+            "cb2Enabled": false
+        },
+        "apiAccessToken": "c6bc0eb3-035d-41e8-8fbc-01f8c9632848",
+        "apiAccessPermToken": "373d4ee024db8ba68b9ddd37791472a925a9415b",
+        "config": {
+            "train.min_size.samples": "15",
+            "train.min_size.intents": "5"
+        },
+        "sessionOrganizationId": "8c8e49dd-603f-49c3-9a53-7646d20713f4",
+        "leAccountId": "90412079",
+        "cbRegion": "lp",
+        "enabledFeatures": [
+            "DIALOGFLOW",
+            "WATSON",
+            "FAAS",
+            "MESSAGING_SURVEY",
+            "AGENT_ANNOTATIONS",
+            "LLM_ENRICHMENT_PREVIEW"
+        ],
+        "siteSettings": [
+            {
+                "name": "messaging.historic.data.masking.regexp",
+                "value": "(Ahmedbad|Ahmednagar|Ahmedpuer|Ahmedpur|Ahmedpur)",
+                "type": "STRING"
+            },
+            {
+                "name": "lp.llm.agreementInfo",
+                "value": {
+                    "isPreviewEnabled": true,
+                    "expirationTimestamp": 1.698008301933E12,
+                    "capacityVolume": 100.0,
+                    "accountId": "90412079",
+                    "userId": 3.682113338E9,
+                    "loginName": "wlai@liveperson.com",
+                    "consentTimestamp": 1.695416301933E12
+                },
+                "type": "OBJECT"
+            },
+            {
+                "name": "lp.llm.brandDetails",
+                "value": {
+                    "brandName": "wei",
+                    "brandIndustry": "Technology"
+                },
+                "type": "OBJECT"
+            }
+        ],
+        "leUserId": "4364783838",
+        "privileges": [
+            1778,
+            1779,
+            1780,
+            1781,
+            1782,
+            1804,
+            1805,
+            1806,
+            1807,
+            1808,
+            1809,
+            1810,
+            1811,
+            1812,
+            1813,
+            1814,
+            1815,
+            1816,
+            1817,
+            1818,
+            1819,
+            1820,
+            1821,
+            1822,
+            1823,
+            1824,
+            1825,
+            1826,
+            1827,
+            1828,
+            1829,
+            1830,
+            1831,
+            1832,
+            1833,
+            1834,
+            1835,
+            1836,
+            1837,
+            1838,
+            1839,
+            1840,
+            1841,
+            1842,
+            1843,
+            1844,
+            1845,
+            1846
+        ],
+        "isElevatedLpa": false
+    },
+    "message": "Success"
+}
