@@ -8,7 +8,7 @@ import (
 	"moul.io/http2curl"
 )
 
-func main() {
+func main2() {
     mermaidCode := `
     graph TD
         A[Start] --> B{Is it working?}
