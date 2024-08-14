@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var name, input string
+var name, input, account, bearer string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -29,7 +29,8 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) { 
 		fmt.Printf("hello %s\n", name)
-		viper.AutomaticEnv()
+		// viper.AutomaticEnv()
+
 		viper.SetConfigFile(".env")	
 		// Read the .env file
 		if err := viper.ReadInConfig(); err != nil {
@@ -41,10 +42,12 @@ to quickly create a Cobra application.`,
 		}
 		home := viper.Get("HOME")
 		siteId := viper.Get("LP_SITE")
+		nvName := viper.Get("name")
 		name := viper.Get("name")
     	fmt.Println("Home directory:", home)
     	fmt.Println("siteid directory:", siteId)
     	fmt.Println("name is directory:", name)
+    	fmt.Println("nvname is directory:", nvName)
 		// lpbot.Hello()
 	},
 }
@@ -71,6 +74,8 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringVarP(&name, "name", "n", "World", "Name to greet")
 	rootCmd.Flags().StringVarP(&input, "input", "i", "", "input bot json file")
+	rootCmd.Flags().StringVarP(&bearer, "bearer", "b", "", "bearer token")
+	rootCmd.Flags().StringVarP(&account, "account", "a", "", "LP Account Id / Site ID")
 	// rootCmd.MarkFlagRequired("input")
 	// rootCmd.Flags().StringVarP(&input, "input", "i", "World", "Name to greet")
 }
