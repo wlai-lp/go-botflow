@@ -1,5 +1,7 @@
 package lpbot
 
+// https://github.com/TyphonHill/go-mermaid/tree/main/flowchart
+
 import (
 	"encoding/json"
 	"fmt"

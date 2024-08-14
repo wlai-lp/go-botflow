@@ -6,6 +6,7 @@ package main
 
 import (
 	"github.com/wlai-lp/bo-botflow/cmd"
+	// tea "github.com/charmbracelet/bubbletea"
 	"os"
 	"fmt"
 
@@ -18,5 +19,7 @@ func main() {
         return
     }
     fmt.Println("Current working directory:", dir)
+
+	
 	cmd.Execute()
 }

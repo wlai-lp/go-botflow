@@ -6,9 +6,11 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"log"
 	// "github.com/wlai-lp/bo-botflow/internal/lpbot"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var name, input string
@@ -27,6 +29,22 @@ to quickly create a Cobra application.`,
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) { 
 		fmt.Printf("hello %s\n", name)
+		viper.AutomaticEnv()
+		viper.SetConfigFile(".env")	
+		// Read the .env file
+		if err := viper.ReadInConfig(); err != nil {
+			fmt.Printf("Error reading config file, %s", err)
+		}
+		// Bind flags to Viper
+		if err := viper.BindPFlags(cmd.Flags()); err != nil {
+			log.Fatalf("Error binding flags: %v", err)
+		}
+		home := viper.Get("HOME")
+		siteId := viper.Get("LP_SITE")
+		name := viper.Get("name")
+    	fmt.Println("Home directory:", home)
+    	fmt.Println("siteid directory:", siteId)
+    	fmt.Println("name is directory:", name)
 		// lpbot.Hello()
 	},
 }
@@ -34,6 +52,7 @@ to quickly create a Cobra application.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -52,7 +71,7 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringVarP(&name, "name", "n", "World", "Name to greet")
 	rootCmd.Flags().StringVarP(&input, "input", "i", "", "input bot json file")
-	rootCmd.MarkFlagRequired("input")
+	// rootCmd.MarkFlagRequired("input")
 	// rootCmd.Flags().StringVarP(&input, "input", "i", "World", "Name to greet")
 }
 
