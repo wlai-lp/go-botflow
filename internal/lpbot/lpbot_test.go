@@ -27,6 +27,6 @@ func TestLPBotLoadAndGenerate(t *testing.T){
 	if err != nil {
 		t.Fatal("LP Bot Load returned error")
 	}
-	GenerateMermaidChart(bot)
-	fmt.Println("testing done")
+	result := GenerateMermaidChart(bot)
+	fmt.Println("testing done \n" + result)
 }

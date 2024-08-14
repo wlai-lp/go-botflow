@@ -23,7 +23,7 @@ func LoadBotFile(f string) (*LPBot, error) {
 	return &bot, nil
 }
 
-func GenerateMermaidChart(lpBot *LPBot) {
+func GenerateMermaidChart(lpBot *LPBot) (string) {
 	fmt.Println("bot id is " + lpBot.Bot.ID)
 	// Generate Mermaid chart
 	var mermaid strings.Builder
@@ -40,7 +40,9 @@ func GenerateMermaidChart(lpBot *LPBot) {
 	}
 	// Output the Mermaid chart
 	fmt.Println("========== mermaid =========")
-	fmt.Println(mermaid.String())
+	// fmt.FormatString()
+	result := fmt.Sprintln(mermaid.String())
+	return result
 }
 
 
