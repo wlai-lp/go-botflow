@@ -34,10 +34,15 @@ func GenerateMermaidChart(lpBot *LPBot) {
 	mermaid.WriteString(dialogs)
 
 	subgraphs := outputSubgraphs(lpBot)
-	fmt.Println(len(subgraphs))
+	fmt.Printf("contains elements %v\n", len(subgraphs))
+	for _, sub := range subgraphs {
+		mermaid.WriteString(sub)
+	}
 	// Output the Mermaid chart
+	fmt.Println("========== mermaid =========")
 	fmt.Println(mermaid.String())
 }
+
 
 func outputSubgraphs(lpBot *LPBot) []string {
 
@@ -45,26 +50,47 @@ func outputSubgraphs(lpBot *LPBot) []string {
 	strSlice := make([]string, len(lpBot.Groups))
 
 	g := lpBot.Groups
-	// cm := lpBot.ConversationMessage
+	cm := lpBot.ConversationMessage
 
-	// cmMap := make(map[string][]ConversationMessage)
-
-	// for _, el := range cm {
-	// 	cmMap[el.Group] =
-
+	// var cmessages []ConversationMessage
+	// // Group by "group"
+	// groupedMessages := make(map[string][]ConversationMessage)
+	// for _, message := range cmessages {
+	// 	groupedMessages[message.Group] = append(groupedMessages[message.Group], message)
 	// }
 
-	for index, element := range g {
-		var subgraph strings.Builder
-		subgraph.WriteString(fmt.Sprintf("   subgraph %v[%v]", element.ID, element.Name))
-		strSlice[index] = subgraph.String()
-		subgraph.WriteString("   end")
+	cmMap := make(map[string][]ConversationMessage)
+
+	// create a map[dialog id] []ConversationMessages
+	for _, el := range cm {
+		cmMap[el.Group] = append(cmMap[el.Group], el)
+
 	}
 
-	output := [3]string{"abc", "efg", "abc"}
-	count := len(lpBot.Groups)
-	fmt.Println(count)
-	return output[:]
+	// for each dialog, build subgraph
+	for index, element := range g {
+		var subgraph strings.Builder
+		subgraph.WriteString(fmt.Sprintf("   subgraph %v[%v]\n", element.ID, element.Name))
+		// TODO: build subgraph flow
+		// input is a map[groupid][]convomessage
+		msgArray := cmMap[element.ID]
+		for _, msg := range msgArray {
+			subgraph.WriteString(fmt.Sprintf("      %v[%v]\n", msg.ID, msg.Name))
+			if msg.NextMessageId != "" {
+				fmt.Println("next message id is not nil " + msg.NextMessageId)
+				subgraph.WriteString(fmt.Sprintf("      %v --> %v\n", msg.ID, msg.NextMessageId))
+			}
+		}
+
+		subgraph.WriteString("   end\n\n")
+		strSlice[index] = subgraph.String()
+	}
+
+	// output := [3]string{"abc", "efg", "abc"}
+	// count := len(lpBot.Groups)
+	// fmt.Println(count)
+	// return output[:]
+	return strSlice[:]
 
 }
 
@@ -76,6 +102,25 @@ func outputDialogs(lpBot *LPBot) string {
 		fmt.Printf("At index %d, value is %s\n", index, element.DialogType)
 		dialogs.WriteString(fmt.Sprintf("   %v -->|has| %v[%v]\n", lpBot.Bot.ID, element.ID, element.Name))
 	}
-
+	dialogs.WriteString("\n")
 	return dialogs.String()
 }
+
+/**
+bot json structure important
+
+top level is bot
+
+bot.conversationMessages[] is array
+- each conversationMessage is an interaction
+
+each conversationMessage has
+- id (unique to that interaction, use this to id mermaid node)
+- name (use this to label mermaid node)
+- status "active"  // to be implemented
+- group (belongs to the dialog)
+- content
+	contentType ...// to be implemented
+- nextMessageId // to create the link relationship in mermaid
+
+**/
