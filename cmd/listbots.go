@@ -20,18 +20,16 @@ import (
 	"github.com/wlai-lp/bo-botflow/internal/lpapi"
 )
 
-type bot struct{
-	ID string
-	Name string
-	Group string
+type bot struct {
+	ID     string
+	Name   string
+	Group  string
 	Agents string
 	Skills string
 }
 
 const listHeight = 14
 const UNASSIGNED = "un_assigned"
-
-
 
 var (
 	titleStyle        = lipgloss.NewStyle().MarginLeft(2)
@@ -122,20 +120,22 @@ to quickly create a Cobra application.`,
 		// merge commands
 		viper.BindPFlags(cmd.Flags())
 
-		if err := getListOfBots(); err != nil {
+		bots, err := getListOfBots()
+		if err != nil {
 			log.Fatal("Unable to get list of bots")
-		}
+		}		
+
+		log.Info("bots", "length", len(bots))
 
 		siteId := viper.Get("LP_SITE")
 		log.Info("lp site id from viper called ", "site", siteId)
 
-		items := []list.Item{
-			item("Item 1"),
-			item("Item 2"),
-			item("Item 3"),
-			item("Item 4"),
-			item("Item 5"),
+		items := []list.Item{}
+
+		for _, b := range bots {
+			items = append(items, item(b.Name))
 		}
+		
 
 		const defaultWidth = 20
 
@@ -167,11 +167,11 @@ func checkListbotsConfig() error {
 	}
 }
 
-func getListOfBots() error {
+func getListOfBots() ([]bot, error) {
 	// get domain by siteid
 	lpd, err := lpapi.GetDomain(fmt.Sprint(viper.Get("LP_SITE")))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// get bot access token and orgid
@@ -179,11 +179,11 @@ func getListOfBots() error {
 	b := fmt.Sprint(viper.Get("BEARER"))
 	if b == "" {
 		log.Error("bearer token value is empty")
-		return errors.New("bearer token value is empty")
+		return nil, errors.New("bearer token value is empty")
 	}
 	token, orgid, err := lpapi.GetBotAccessToken(lpd, b)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	log.Info(fmt.Sprintf("token is %v and org is %v", token, orgid))
 
@@ -192,20 +192,28 @@ func getListOfBots() error {
 	log.Info("total of", "groups", len(groups))
 
 	// get bots by group id
-	ungrouped := lpapi.GetUngroupedBotGroups(lpd, token, orgid, UNASSIGNED)
-	log.Info("total of ungroup", "ungrouped", len(ungrouped))
+	allBots := lpapi.GetBotsByGroupId(lpd, token, orgid, UNASSIGNED)
+	log.Info("total of ungroup", "ungrouped", len(allBots))
 
-	listOfBots := aggregateBots(groups, ungrouped)
+	// loop each botgroup id to get bots in the group, add it to allbots
+	// todo: make this call concurrent
+	for _, g := range groups {
+		tempGroup := lpapi.GetBotsByGroupId(lpd, token, orgid, g.BotGroupID)
+		allBots = append(allBots, tempGroup...)
+	}
+
+	listOfBots := aggregateBots(allBots)
+	
 
 	log.Info("list of bots count", "count", listOfBots)
 
 	// get ungroup list
-	return nil
+	return listOfBots, nil
 }
 
-func aggregateBots(groups []lpapi.BotGroupsData, ungrouped []lpapi.UngroupedBot) []bot{
+func aggregateBots(allBots []lpapi.GroupBot) []bot {
 	var bots = []bot{}
-	for _, v := range ungrouped {
+	for _, v := range allBots {
 		var newBot bot
 		newBot.ID = v.BotID
 		newBot.Name = v.BotName
@@ -216,24 +224,25 @@ func aggregateBots(groups []lpapi.BotGroupsData, ungrouped []lpapi.UngroupedBot)
 	}
 
 	// for each group we have to query for the bot, let's do concurrent
-	var wg sync.WaitGroup
-	results := make(chan string, len(groups))
-	log.Info("do some concurrent stuff")
-	for _, v := range groups {
-		wg.Add(1)
-		go makeRequest(v, &wg, results)
-	}
-	wg.Wait()
-	close(results)
-	log.Info("done with concurrent stuff")
-	for result := range results {
-        log.Info(result)
-    }
+	// var wg sync.WaitGroup
+	// results := make(chan string, len(groups))
+	// log.Info("do some concurrent stuff")
+	// for _, v := range groups {
+	// 	wg.Add(1)
+	// 	go makeRequest(v, &wg, results)
+	// }
+	// wg.Wait()
+	// close(results)
+	// log.Info("done with concurrent stuff")
+	// for result := range results {
+	// 	log.Info(result)
+	// }
 	return bots
 }
 
-func makeRequest(group lpapi.BotGroupsData, wg *sync.WaitGroup, results chan<- string){
+func makeRequest(group lpapi.BotGroupsData, wg *sync.WaitGroup, results chan<- string) {
 	defer wg.Done()
+
 	results <- fmt.Sprintf("return from make reqeust")
 }
 
