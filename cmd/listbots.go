@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -19,7 +20,18 @@ import (
 	"github.com/wlai-lp/bo-botflow/internal/lpapi"
 )
 
+type bot struct{
+	ID string
+	Name string
+	Group string
+	Agents string
+	Skills string
+}
+
 const listHeight = 14
+const UNASSIGNED = "un_assigned"
+
+
 
 var (
 	titleStyle        = lipgloss.NewStyle().MarginLeft(2)
@@ -180,9 +192,49 @@ func getListOfBots() error {
 	log.Info("total of", "groups", len(groups))
 
 	// get bots by group id
-	// get ungroup list
+	ungrouped := lpapi.GetUngroupedBotGroups(lpd, token, orgid, UNASSIGNED)
+	log.Info("total of ungroup", "ungrouped", len(ungrouped))
 
+	listOfBots := aggregateBots(groups, ungrouped)
+
+	log.Info("list of bots count", "count", listOfBots)
+
+	// get ungroup list
 	return nil
+}
+
+func aggregateBots(groups []lpapi.BotGroupsData, ungrouped []lpapi.UngroupedBot) []bot{
+	var bots = []bot{}
+	for _, v := range ungrouped {
+		var newBot bot
+		newBot.ID = v.BotID
+		newBot.Name = v.BotName
+		newBot.Group = "ungrouped"
+		newBot.Agents = "TODO"
+		newBot.Skills = "TODO"
+		bots = append(bots, newBot)
+	}
+
+	// for each group we have to query for the bot, let's do concurrent
+	var wg sync.WaitGroup
+	results := make(chan string, len(groups))
+	log.Info("do some concurrent stuff")
+	for _, v := range groups {
+		wg.Add(1)
+		go makeRequest(v, &wg, results)
+	}
+	wg.Wait()
+	close(results)
+	log.Info("done with concurrent stuff")
+	for result := range results {
+        log.Info(result)
+    }
+	return bots
+}
+
+func makeRequest(group lpapi.BotGroupsData, wg *sync.WaitGroup, results chan<- string){
+	defer wg.Done()
+	results <- fmt.Sprintf("return from make reqeust")
 }
 
 func init() {

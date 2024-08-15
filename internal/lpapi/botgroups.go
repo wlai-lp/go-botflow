@@ -1,3 +1,5 @@
+// this return ths list of bot groups only
+
 package lpapi
 
 import (
