@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	 "github.com/charmbracelet/log"
 )
 
 type LpDomains struct {
@@ -39,29 +40,28 @@ func GetDomain(siteId string) (*LpDomains, error) {
 	req, err := http.NewRequest(method, url, nil)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return nil, err
 	}
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return nil, err
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return nil, err
 	}
-	fmt.Println(string(body))
+	log.Debug(string(body))
 
 	var result LpDomains
 	if err := json.Unmarshal(body, &result); err != nil {
-		fmt.Println("Error:", err)
+		log.Error("Error:", err)
 		return nil, err
 	}
-	fmt.Printf("Response: %+v\n", result)
 
 	return &result, nil
 

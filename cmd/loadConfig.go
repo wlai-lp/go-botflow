@@ -1,18 +1,29 @@
 package cmd
 
 import (
+	"os"
+
+	"github.com/charmbracelet/log"
 	"github.com/spf13/viper"
-	"fmt"
 ) 
 
+var loaded = false
+
 func LoadViperConfig() (viper.Viper){
-	fmt.Printf("LoadViperConfig\n")
+	if loaded {
+		log.Debug("env already loaded, just return")
+		return *viper.GetViper()
+	}
+	dir, _ := os.Getwd()	
+	log.Info("Read .env file in", "dir", dir)
+	log.Debug("LoadViperConfig\n")
 	viper.SetConfigFile(".env")	
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Printf("Error reading config file, %s", err)
+		log.Error("Error reading config file, %s", err)
 	}
 	siteId := viper.Get("LP_SITE")
-	fmt.Println("siteid directory:", siteId)
+	log.Info("Load LP Site id:", "id", siteId)
+	loaded = true
 
 	return *viper.GetViper()
 }

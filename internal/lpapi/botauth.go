@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+     "github.com/charmbracelet/log"
 )
 
 type SuccessResult struct {
@@ -57,7 +58,7 @@ type Response struct {
 
 func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId string) {
 
-	fmt.Printf("\ngetting access token with bearer %v\n", bearer)
+	log.Info("getting access token with ", "bearer", bearer)
 	uri, _ := getBaseURI(lpd, "cbLeIntegrations")
 
 	uri = "https://" + uri + "/sso/authenticate"

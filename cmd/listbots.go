@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/wlai-lp/bo-botflow/internal/lpapi"
+	 "github.com/charmbracelet/log"
 )
 
 
@@ -106,7 +107,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("listbots called")
+		log.Info("Executing listbots subcommand")
 		
 		if err := getListOfBots(); err != nil {
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
@@ -154,36 +155,43 @@ func checkListbotsConfig() (error){
 	}
 }
 
-func getListOfBots() error {
+func getListOfBots() error {	
 	// get domain by siteid
-
-	// get bot access token
-
-	// query list of bots
 	lpd, err := lpapi.GetDomain(fmt.Sprint(viper.Get("LP_SITE")))
 	if err != nil {
 		return err
 	}
-
-	token, orgid := lpapi.GetBotAccessToken(lpd, fmt.Sprint(viper.Get("BEARER")))
-
+	
+	// get bot access token and orgid
+	// TODO: bearer token flag override
+	token, orgid := lpapi.GetBotAccessToken(lpd, fmt.Sprint(viper.Get("BEARER")))	
 	fmt.Printf("token is %v and org is %v", token, orgid)
+
+	// get bot group list to get group id
+	// get bots by group id
+	// get ungroup list
+
 
 	return nil
 }
 
 func init() {
+	log.SetReportCaller(true)
+	// log.WithPrefix("listbots").Info("init")
+	log.Debug("init")
+
 	LoadViperConfig()
 	err := checkListbotsConfig()
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		return
 	}
-	siteId := viper.Get("LP_SITE")
-	fmt.Println("xxx siteid directory:", siteId)
+	// siteId := viper.Get("LP_SITE")
+	// fmt.Println("xxx siteid directory:", siteId)
 	rootCmd.AddCommand(listbotsCmd)
 	listbotsCmd.Flags().String("name", "", "Name to be used")
-    listbotsCmd.MarkFlagRequired("name")
+	// listbotsCmd.Flags().StringVarP(&bearer, "bearer", "b", "", "bearer token")
+    // listbotsCmd.MarkFlagRequired("bearer")
 
 	// Here you will define your flags and configuration settings.
 
