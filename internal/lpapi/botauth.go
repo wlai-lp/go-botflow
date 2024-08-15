@@ -2,10 +2,9 @@ package lpapi
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/charmbracelet/log"
 	"io"
 	"net/http"
-     "github.com/charmbracelet/log"
 )
 
 type SuccessResult struct {
@@ -62,7 +61,7 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId strin
 	uri, _ := getBaseURI(lpd, "cbLeIntegrations")
 
 	uri = "https://" + uri + "/sso/authenticate"
-	fmt.Printf("uri is %v \n", uri)
+	log.Debug("cbLeIntegrations domain is", "url", uri)
 
 	method := "GET"
 
@@ -70,33 +69,33 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId strin
 	req, err := http.NewRequest(method, uri, nil)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return
 	}
 	req.Header.Add("Accept", "application/json, text/plain, */*")
-	req.Header.Add("Authorization", "Bearer " + bearer)
+	req.Header.Add("Authorization", "Bearer "+bearer)
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return
 	}
-	fmt.Println(string(body))
+	log.Debug(string(body))
 
 	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
-	    fmt.Println("\nError:", err)
+		log.Error("Error:", err)
 		return
 	}
-	fmt.Printf("\naccess token is: %v\n", result.SuccessResult.ApiAccessToken)
+	log.Info("access token is:", "token", result.SuccessResult.ApiAccessToken)
 
 	return result.SuccessResult.ApiAccessToken, result.SuccessResult.ChatBotPlatformUser.OrgId
-    // return ""
+	// return ""
 }

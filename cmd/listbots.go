@@ -115,7 +115,7 @@ to quickly create a Cobra application.`,
 		}
 
 		siteId := viper.Get("LP_SITE")
-		fmt.Println("lp site id from viper called ", siteId)
+		log.Info("lp site id from viper called ", "site", siteId)
 
 		items := []list.Item{
             item("Item 1"),
@@ -165,7 +165,7 @@ func getListOfBots() error {
 	// get bot access token and orgid
 	// TODO: bearer token flag override
 	token, orgid := lpapi.GetBotAccessToken(lpd, fmt.Sprint(viper.Get("BEARER")))	
-	fmt.Printf("token is %v and org is %v", token, orgid)
+	log.Info(fmt.Sprintf("token is %v and org is %v", token, orgid))
 
 	// get bot group list to get group id
 	// get bots by group id
