@@ -28,14 +28,7 @@ func getBaseURI(domains *LpDomains, service string) (string, bool) {
 	return "", false
 }
 
-func GetBotAccessToken(lpd *LpDomains, bearer string) (token string) {
-	fmt.Printf("getting access token with bearer %v", bearer)
-	uri, _ :=getBaseURI(lpd, "cbLeIntegrations")
-	fmt.Printf("uri is %v", uri)
 
-	
-	return uri
-}
 
 func GetDomain(siteId string) (*LpDomains, error) {
 
