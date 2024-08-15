@@ -165,7 +165,9 @@ func getListOfBots() error {
 		return err
 	}
 
-	lpapi.GetBotAccessToken(lpd, fmt.Sprint(viper.Get("BEARER")))
+	token, orgid := lpapi.GetBotAccessToken(lpd, fmt.Sprint(viper.Get("BEARER")))
+
+	fmt.Printf("token is %v and org is %v", token, orgid)
 
 	return nil
 }

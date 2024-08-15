@@ -55,36 +55,7 @@ type Response struct {
 	Message       string        `json:"message"`
 }
 
-func GetBotAccessToken(lpd *LpDomains, bearer string) (token string) {
-
-    // fmt.Printf("\ngetting access token with bearer %v\n", bearer)
-	// url := "https://va.bc-sso.liveperson.net/le-auth/sso/authenticate"
-	// method := "GET"
-
-	// client := &http.Client{}
-	// req, err := http.NewRequest(method, url, nil)
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// req.Header.Add("Accept", "application/json, text/plain, */*")
-	// // req.Header.Add("Authorization", "Bearer 9e23d9cc84188a48380010a4bedbb298071de032afd8051e31ad93439f895d35")
-	// req.Header.Add("Authorization", "Bearer " + bearer)
-
-	// res, err := client.Do(req)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// defer res.Body.Close()
-
-	// body, err := io.ReadAll(res.Body)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// fmt.Println(string(body))
+func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId string) {
 
 	fmt.Printf("\ngetting access token with bearer %v\n", bearer)
 	uri, _ := getBaseURI(lpd, "cbLeIntegrations")
@@ -121,10 +92,10 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string) {
 	var result Response
 	if err := json.Unmarshal(body, &result); err != nil {
 	    fmt.Println("\nError:", err)
-		return ""
+		return
 	}
 	fmt.Printf("\naccess token is: %v\n", result.SuccessResult.ApiAccessToken)
 
-	return result.SuccessResult.ApiAccessToken
+	return result.SuccessResult.ApiAccessToken, result.SuccessResult.ChatBotPlatformUser.OrgId
     // return ""
 }
