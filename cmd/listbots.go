@@ -107,6 +107,9 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("Executing listbots subcommand")
 
+		// merge commands
+		viper.BindPFlags(cmd.Flags())
+
 		if err := getListOfBots(); err != nil {
 			log.Fatal("Unable to get list of bots")
 		}
@@ -162,11 +165,14 @@ func getListOfBots() error {
 	// get bot access token and orgid
 	// TODO: bearer token flag override
 	b := fmt.Sprint(viper.Get("BEARER"))
-	if b != "" {
+	if b == "" {
 		log.Error("bearer token value is empty")
 		return errors.New("bearer token value is empty")
 	}
-	token, orgid := lpapi.GetBotAccessToken(lpd, b)
+	token, orgid, err := lpapi.GetBotAccessToken(lpd, b)
+	if err != nil {
+		return err
+	}
 	log.Info(fmt.Sprintf("token is %v and org is %v", token, orgid))
 
 	// get bot group list to get group id
@@ -190,8 +196,8 @@ func init() {
 	// siteId := viper.Get("LP_SITE")
 	// fmt.Println("xxx siteid directory:", siteId)
 	rootCmd.AddCommand(listbotsCmd)
-	listbotsCmd.Flags().String("name", "", "Name to be used")
-	// listbotsCmd.Flags().StringVarP(&bearer, "bearer", "b", "", "bearer token")
+	// listbotsCmd.Flags().String("name", "", "Name to be used")
+	listbotsCmd.Flags().StringVarP(&bearer, "BEARER", "B", "", "bearer token")
 	// listbotsCmd.MarkFlagRequired("bearer")
 
 	// Here you will define your flags and configuration settings.

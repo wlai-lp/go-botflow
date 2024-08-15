@@ -2,9 +2,12 @@ package lpapi
 
 import (
 	"encoding/json"
-	"github.com/charmbracelet/log"
 	"io"
 	"net/http"
+    "strconv"
+
+	"github.com/charmbracelet/log"
+	"github.com/wlai-lp/bo-botflow/util"
 )
 
 type SuccessResult struct {
@@ -55,7 +58,7 @@ type Response struct {
 	Message       string        `json:"message"`
 }
 
-func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId string) {
+func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId string, e error) {
 
 	log.Info("getting access token with ", "bearer", bearer)
 	uri, _ := getBaseURI(lpd, "cbLeIntegrations")
@@ -76,6 +79,12 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId strin
 	req.Header.Add("Authorization", "Bearer "+bearer)
 
 	res, err := client.Do(req)
+
+    log.Info(res.StatusCode)
+    if res.StatusCode !=200 {        
+        return "", "", util.LogAndReturnError("request status code is " + strconv.Itoa(res.StatusCode))
+    }
+
 	if err != nil {
 		log.Error(err)
 		return
@@ -94,8 +103,13 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId strin
 		log.Error("Error:", err)
 		return
 	}
+
+    if result.SuccessResult.ApiAccessToken == ""{
+        // return "", "", util.LogAndReturnError("access token is blank")
+        return
+    }
 	log.Info("access token is:", "token", result.SuccessResult.ApiAccessToken)
 
-	return result.SuccessResult.ApiAccessToken, result.SuccessResult.ChatBotPlatformUser.OrgId
+	return result.SuccessResult.ApiAccessToken, result.SuccessResult.ChatBotPlatformUser.OrgId, nil
 	// return ""
 }
