@@ -80,7 +80,7 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId strin
 
 	res, err := client.Do(req)
 
-    log.Info(res.StatusCode)
+    log.Debug("Respond", "status code", res.StatusCode)
     if res.StatusCode !=200 {        
         return "", "", util.LogAndReturnError("request status code is " + strconv.Itoa(res.StatusCode))
     }
@@ -111,5 +111,4 @@ func GetBotAccessToken(lpd *LpDomains, bearer string) (token string, orgId strin
 	log.Info("access token is:", "token", result.SuccessResult.ApiAccessToken)
 
 	return result.SuccessResult.ApiAccessToken, result.SuccessResult.ChatBotPlatformUser.OrgId, nil
-	// return ""
 }

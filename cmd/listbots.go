@@ -176,6 +176,9 @@ func getListOfBots() error {
 	log.Info(fmt.Sprintf("token is %v and org is %v", token, orgid))
 
 	// get bot group list to get group id
+	groups := lpapi.GetBotGroups(lpd, token, orgid)
+	log.Info("total of", "groups", len(groups))
+
 	// get bots by group id
 	// get ungroup list
 
