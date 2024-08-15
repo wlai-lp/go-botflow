@@ -19,6 +19,24 @@ func Hello() string {
 	return "hello"
 }
 
+func getBaseURI(domains *LpDomains, service string) (string, bool) {
+	for _, uri := range domains.BaseURIs {
+		if uri.Service == service {
+			return uri.BaseURI, true
+		}
+	}
+	return "", false
+}
+
+func GetBotAccessToken(lpd *LpDomains, bearer string) (token string) {
+	fmt.Printf("getting access token with bearer %v", bearer)
+	uri, _ :=getBaseURI(lpd, "cbLeIntegrations")
+	fmt.Printf("uri is %v", uri)
+
+	
+	return uri
+}
+
 func GetDomain(siteId string) (*LpDomains, error) {
 
 	url := fmt.Sprintf("https://api.liveperson.net/api/account/%s/service/baseURI?version=1.0", siteId)

@@ -1,19 +1,21 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
+	"errors"
 	"fmt"
-    "io"
-    "os"
-    "strings"
+	"io"
+	"os"
+	"strings"
 
-    tea "github.com/charmbracelet/bubbletea"
-    "github.com/charmbracelet/bubbles/list"
-    "github.com/charmbracelet/lipgloss"
-    "github.com/spf13/cobra"
+	"github.com/charmbracelet/bubbles/list"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/wlai-lp/bo-botflow/internal/lpapi"
 )
 
 
@@ -105,6 +107,15 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("listbots called")
+		
+		if err := getListOfBots(); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+            os.Exit(1)
+		}
+
+		siteId := viper.Get("LP_SITE")
+		fmt.Println("lp site id from viper called ", siteId)
+
 		items := []list.Item{
             item("Item 1"),
             item("Item 2"),
@@ -132,7 +143,42 @@ to quickly create a Cobra application.`,
 	},
 }
 
+func checkListbotsConfig() (error){
+	// TODO: implement validation
+	var valid = false
+	if valid {
+		fmt.Println("check list bot config return error")
+		return errors.New("missing required field")
+	} else {
+		return nil
+	}
+}
+
+func getListOfBots() error {
+	// get domain by siteid
+
+	// get bot access token
+
+	// query list of bots
+	lpd, err := lpapi.GetDomain(fmt.Sprint(viper.Get("LP_SITE")))
+	if err != nil {
+		return err
+	}
+
+	lpapi.GetBotAccessToken(lpd, fmt.Sprint(viper.Get("BEARER")))
+
+	return nil
+}
+
 func init() {
+	LoadViperConfig()
+	err := checkListbotsConfig()
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+		return
+	}
+	siteId := viper.Get("LP_SITE")
+	fmt.Println("xxx siteid directory:", siteId)
 	rootCmd.AddCommand(listbotsCmd)
 	listbotsCmd.Flags().String("name", "", "Name to be used")
     listbotsCmd.MarkFlagRequired("name")
