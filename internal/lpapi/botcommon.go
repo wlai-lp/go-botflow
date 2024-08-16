@@ -3,6 +3,7 @@ package lpapi
 import (
 	"errors"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -16,17 +17,18 @@ type Bot struct {
 	Agents string
 	Skills string
 }
+
 const UNASSIGNED = "un_assigned"
+
 var groupNameByIdMap = make(map[string]string)
 var botAgentsMap = make(map[string]string)
 var agentSkillsMap = make(map[string]string)
 var skillIdToNameMap = make(map[int64]string)
 
-
 func GetListOfBots(siteId string, bearer string) ([]Bot, error) {
 	start := time.Now()
 	// check required fields
-	if (bearer == "" || siteId == "") {
+	if bearer == "" || siteId == "" {
 		log.Error("missing site and/or bearer token value")
 		return nil, errors.New("site/bearer token value is empty")
 	}
@@ -36,7 +38,7 @@ func GetListOfBots(siteId string, bearer string) ([]Bot, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// get bot access token
 	token, orgId, err := GetBotAccessToken(lpd, bearer)
 	if err != nil {
@@ -60,44 +62,60 @@ func GetListOfBots(siteId string, bearer string) ([]Bot, error) {
 
 	// loop each botgroup id to get bots in the group, add it to allbots
 	// todo: make this call concurrent
-	for _, g := range groups {
-		tempGroup := GetBotsByGroupId(lpd, token, orgId, g.BotGroupID)
-		allBots = append(allBots, tempGroup...)
+	var wg sync.WaitGroup
+	// results := make(chan []GroupBot, len(groups))
+	for i, g := range groups {
+		wg.Add(1)
+		// tempGroup := GetBotsByGroupId(lpd, token, orgId, g.BotGroupID)
+		go func() {
+			log.Info("go concurrent get groups", "id", i)
+			defer wg.Done()
+			// results <- GetBotsByGroupId(lpd, token, orgId, g.BotGroupID)
+			tempGroup := GetBotsByGroupId(lpd, token, orgId, g.BotGroupID)
+			allBots = append(allBots, tempGroup...)
+		}()
 	}
-
-	// for each bot lookup its agent	
-	for _, v := range allBots {
+	wg.Wait()
+	// for each bot lookup its agent
+	for i, v := range allBots {
 		// TODO: this can also be concurrent
-		botAgentsMap[v.BotID] = GetBotAgentByBotId(lpd, token, orgId, v.BotID)
+		wg.Add(1)
+		go func() {
+			log.Info("go concurrent get BotAgentByBotId", "id", i)
+			defer wg.Done()
+			botAgentsMap[v.BotID] = GetBotAgentByBotId(lpd, token, orgId, v.BotID)
+		}()
 	}
+	// wg.Wait()
 
-	// cache skills
-	skills := GetSkills(lpd, siteId, bearer)
-	for _, s := range skills {
-		skillIdToNameMap[s.ID] = s.Name
-	}
-	
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		// cache skills
+		skills := GetSkills(lpd, siteId, bearer)
+		for _, s := range skills {
+			skillIdToNameMap[s.ID] = s.Name
+		}
+	}()
+	wg.Wait()
 
 	// look up users
 	users := GetUsers(lpd, siteId, bearer)
 	log.Info("returned user", "count", len(users))
 	for _, u := range users {
-		// TODO: skillid to skill name		
+		// TODO: skillid to skill name
 		// agentSkillsMap[u.LoginName] = fmt.Sprintf("%v", u.SkillIds)
 		var skillName string
-		if len(u.SkillIds) > 0{
+		if len(u.SkillIds) > 0 {
 			skillName = skillIdToNameMap[u.SkillIds[0]]
 		}
 		agentSkillsMap[u.LoginName] = skillName
 	}
 
-
-
 	listOfBots := aggregateBots(allBots)
-	
+
 	elapsed := time.Since(start)
 	log.Info("list of bots count", "count", len(listOfBots), "execution time", elapsed)
-	
 
 	// get ungroup list
 	return listOfBots, nil
