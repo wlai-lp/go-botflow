@@ -9,6 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wlai-lp/bo-botflow/internal/lpapi"
 
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
@@ -54,7 +55,7 @@ func (m botModel) View() string {
 	return baseStyle.Render(m.table.View()) + "\n"
 }
 
-func showTable(bots []bot) {
+func showTable(bots []lpapi.Bot) {
 
 	columns := []table.Column{
 		{Title: "Id", Width: 40},
@@ -118,16 +119,17 @@ to quickly create a Cobra application.`,
 
 		viper.BindPFlags(cmd.Flags())
 
-		bots, err := getListOfBots()
+		// get paramers
+		siteId := fmt.Sprint(viper.Get("LP_SITE"))
+		bearer := fmt.Sprint(viper.Get("BEARER"))
+		log.Info("get env params", "site", siteId, "bearer", bearer)
+
+		bots, err := lpapi.GetListOfBots(siteId, bearer)
 		if err != nil {
 			log.Fatal("Unable to get list of bots")
 		}		
 
 		log.Info("retrieved all bots", "length", len(bots))
-
-		siteId := viper.Get("LP_SITE")
-		log.Info("lp site id from viper called ", "site", siteId)
-		
 
 		showTable(bots)
 	},

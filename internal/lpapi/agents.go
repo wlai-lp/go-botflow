@@ -18,9 +18,6 @@ type User struct {
     LoginName string  `json:"loginName"`
 }
 
-func GetOwned() {
-	
-}
 
 func GetUsers(lpd *LpDomains, siteId string, bearer string) []User {
 

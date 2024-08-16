@@ -17,9 +17,6 @@ type Skill struct {
     ID      int64  `json:"id"`
 }
 
-func AAA(){
-	
-}
 
 func GetSkills(lpd *LpDomains, siteId string, bearer string) []Skill {
 
