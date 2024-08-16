@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-
 	"os"
 
 	"github.com/spf13/cobra"
@@ -58,15 +57,23 @@ func showTable(bots []bot) {
 
 	columns := []table.Column{
 		{Title: "Id", Width: 4},
-		{Title: "Bane", Width: 50},
+		{Title: "Name", Width: 50},
 		{Title: "Group", Width: 10},
 		{Title: "Agent", Width: 10},
 		{Title: "Skill", Width: 10},
 	}
 
-	rows := []table.Row{
-		{"1", "Tokyolkfjlsak;jfl;ks djf lsd fkjhs ", "Japan", "37,274,000", "123"},
-		{"2", "Delhi", "India", "32,065,760", "1234"},		
+	rows := []table.Row{}
+
+	for i, b := range bots {
+		var s [5]string
+		s[0] = fmt.Sprintf("%v",i+1)
+		s[1] = b.Name
+		s[2] = b.Group
+		s[3] = b.Agents
+		s[4] = b.Skills
+		slice := s[:]
+		rows = append(rows, slice)	
 	}
 
 	t := table.New(

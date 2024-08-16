@@ -28,7 +28,7 @@ type bot struct {
 	Skills string
 }
 const UNASSIGNED = "un_assigned"
-
+var GroupNameById = make(map[string]string)
 
 const listHeight = 14
 
@@ -192,6 +192,12 @@ func getListOfBots() ([]bot, error) {
 	groups := lpapi.GetBotGroups(lpd, token, orgid)
 	log.Info("total of", "groups", len(groups))
 
+	// cache groups id to name
+	// groupNameById := make(map[string]string)
+	for _, g := range groups {
+		GroupNameById[g.BotGroupID] = g.BotGroupName
+	}
+
 	// get bots by group id
 	allBots := lpapi.GetBotsByGroupId(lpd, token, orgid, UNASSIGNED)
 	log.Info("total of ungroup", "ungrouped", len(allBots))
@@ -205,7 +211,6 @@ func getListOfBots() ([]bot, error) {
 
 	listOfBots := aggregateBots(allBots)
 	
-
 	log.Info("list of bots count", "count", listOfBots)
 
 	// get ungroup list
@@ -218,7 +223,7 @@ func aggregateBots(allBots []lpapi.GroupBot) []bot {
 		var newBot bot
 		newBot.ID = v.BotID
 		newBot.Name = v.BotName
-		newBot.Group = "ungrouped"
+		newBot.Group = GroupNameById[v.BotGroupID]
 		newBot.Agents = "TODO"
 		newBot.Skills = "TODO"
 		bots = append(bots, newBot)
