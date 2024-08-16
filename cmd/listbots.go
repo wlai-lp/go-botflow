@@ -28,7 +28,10 @@ type bot struct {
 	Skills string
 }
 const UNASSIGNED = "un_assigned"
-var GroupNameById = make(map[string]string)
+var groupNameByIdMap = make(map[string]string)
+var botAgentsMap = make(map[string]string)
+var agentSkillsMap = make(map[string]string)
+var skillIdToNameMap = make(map[int64]string)
 
 const listHeight = 14
 
@@ -195,7 +198,7 @@ func getListOfBots() ([]bot, error) {
 	// cache groups id to name
 	// groupNameById := make(map[string]string)
 	for _, g := range groups {
-		GroupNameById[g.BotGroupID] = g.BotGroupName
+		groupNameByIdMap[g.BotGroupID] = g.BotGroupName
 	}
 
 	// get bots by group id
@@ -210,17 +213,31 @@ func getListOfBots() ([]bot, error) {
 	}
 
 	// for each bot lookup its agent
-	botAgents := make(map[string]string)
+	
 	for _, v := range allBots {
-		botAgents[v.BotID] = lpapi.GetBotAgentByBotId(lpd, token, orgid, v.BotID)
+		botAgentsMap[v.BotID] = lpapi.GetBotAgentByBotId(lpd, token, orgid, v.BotID)
 	}
+
+	// TODO: look up skill and cache it
+	skills := lpapi.GetSkills(lpd, sid, b)
+	for _, s := range skills {
+		skillIdToNameMap[s.ID] = s.Name
+	}
+	
 
 	// look up users
 	users := lpapi.GetUsers(lpd, sid, b)
 	log.Info("returned user", "count", len(users))
+	for _, u := range users {
+		// TODO: skillid to skill name		
+		// agentSkillsMap[u.LoginName] = fmt.Sprintf("%v", u.SkillIds)
+		var skillName string
+		if len(u.SkillIds) > 0{
+			skillName = skillIdToNameMap[u.SkillIds[0]]
+		}
+		agentSkillsMap[u.LoginName] = skillName
+	}
 
-
-	// look up skills
 
 
 	listOfBots := aggregateBots(allBots)
@@ -237,9 +254,9 @@ func aggregateBots(allBots []lpapi.GroupBot) []bot {
 		var newBot bot
 		newBot.ID = v.BotID
 		newBot.Name = v.BotName
-		newBot.Group = GroupNameById[v.BotGroupID]
-		newBot.Agents = "TODO"
-		newBot.Skills = "TODO"
+		newBot.Group = groupNameByIdMap[v.BotGroupID]
+		newBot.Agents = botAgentsMap[v.BotID]
+		newBot.Skills = agentSkillsMap[botAgentsMap[v.BotID]]
 		bots = append(bots, newBot)
 	}
 

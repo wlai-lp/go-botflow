@@ -61,7 +61,7 @@ func showTable(bots []bot) {
 		{Title: "Name", Width: 50},
 		{Title: "Group", Width: 20},
 		{Title: "Agent", Width: 20},
-		{Title: "Skill", Width: 20},
+		{Title: "Skill", Width: 30},
 	}
 
 	rows := []table.Row{}

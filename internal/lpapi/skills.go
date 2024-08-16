@@ -1,7 +1,5 @@
-// api to get agent login name and skill
-
+// api to get skills
 package lpapi
-
 
 import (
 	"encoding/json"
@@ -13,28 +11,27 @@ import (
 )
 
 // Define the struct
-type User struct {
-    SkillIds  []int64 `json:"skillIds"`
-    LoginName string  `json:"loginName"`
+type Skill struct {
+    Deleted bool   `json:"deleted"`
+    Name    string `json:"name"`
+    ID      int64  `json:"id"`
 }
 
-func GetOwned() {
+func AAA(){
 	
 }
 
-func GetUsers(lpd *LpDomains, siteId string, bearer string) []User {
+func GetSkills(lpd *LpDomains, siteId string, bearer string) []Skill {
 
-	log.Info("GetUsers", "bearer", bearer)
+	log.Info("Get Skills", "bearer", bearer)
 	uri, _ := getBaseURI(lpd, "accountConfigReadWrite")
 
 	// "https://va.bc-platform.liveperson.net/bot-platform-manager-0.1/bot-groups/bots?sort-by=botName%3Aasc&size=50&bot-group=un_assigned"
-	var postfix string
 	
 	// url := "https://" + uri + "/bot-groups/bots?sort-by=botName%3Aasc&size=50&bot-group=un_assigned"
 	// url := "https://" + uri + "/bot-groups/bots?sort-by=botName%3Aasc&size=50&bot-group=" + groupid
-	// https://va.ac.liveperson.net/api/account/90412079/configuration/le-users/users?v=5.0&select=loginName,skillIds
-	postfix = "/configuration/le-users/users?v=5.0&select=loginName%2CskillIds"
-	url := "https://" + uri + "/api/account/" + siteId + "/" + postfix
+	// "https://va.ac.liveperson.net/api/account/90412079/configuration/le-users/skills?v=2.0"
+	url := "https://" + uri + "/api/account/" + siteId + "/configuration/le-users/skills?v=2.0"
 	log.Info("get", "url", url)
 	method := "GET"
 
@@ -62,11 +59,11 @@ func GetUsers(lpd *LpDomains, siteId string, bearer string) []User {
 	}
 	log.Info(string(body))
 
-	var result []User
+	var result []Skill
 	if err := json.Unmarshal(body, &result); err != nil {
 		log.Error("Error:", err)
 		return nil
 	}
-	log.Info("get users count:", "result", len(result))
+	log.Info("get skills count:", "result", len(result))
 	return result
 }

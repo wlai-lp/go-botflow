@@ -102,5 +102,5 @@ func GetBotAgentByBotId(lpd *LpDomains, token string, orgId string, botId string
 		return ""
 	}
 	log.Info("BotAgent by botId agent", "count", len(result.Agents))
-	return result.Agents[0].LpUserId
+	return result.Agents[0].LpAccountUser
 }
