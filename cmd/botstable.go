@@ -17,7 +17,8 @@ import (
 )
 
 var baseStyle = lipgloss.NewStyle().
-	BorderStyle(lipgloss.NormalBorder()).
+	// Height(20).
+	BorderStyle(lipgloss.RoundedBorder()).
 	BorderForeground(lipgloss.Color("240"))
 
 type botModel struct {
@@ -58,9 +59,9 @@ func showTable(bots []bot) {
 	columns := []table.Column{
 		{Title: "Id", Width: 40},
 		{Title: "Name", Width: 50},
-		{Title: "Group", Width: 10},
-		{Title: "Agent", Width: 10},
-		{Title: "Skill", Width: 10},
+		{Title: "Group", Width: 20},
+		{Title: "Agent", Width: 20},
+		{Title: "Skill", Width: 20},
 	}
 
 	rows := []table.Row{}
@@ -80,7 +81,7 @@ func showTable(bots []bot) {
 		table.WithColumns(columns),
 		table.WithRows(rows),
 		table.WithFocused(true),
-		table.WithHeight(7),
+		table.WithHeight(20),
 	)
 
 	s := table.DefaultStyles()
