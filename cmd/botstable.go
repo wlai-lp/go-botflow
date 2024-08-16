@@ -118,6 +118,7 @@ to quickly create a Cobra application.`,
 		log.Info("botstable called")
 
 		viper.BindPFlags(cmd.Flags())
+		// TODO: validate required parameters
 
 		// get paramers
 		siteId := fmt.Sprint(viper.Get("LP_SITE"))
@@ -138,6 +139,7 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(botstableCmd)
 	botstableCmd.Flags().StringVarP(&bearer, "BEARER", "B", "", "bearer token")
+	botstableCmd.Flags().StringVarP(&account, "LP_SITE", "a", "", "LP account number")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

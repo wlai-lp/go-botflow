@@ -19,7 +19,7 @@ func LoadViperConfig() (viper.Viper){
 	log.Debug("LoadViperConfig\n")
 	viper.SetConfigFile(".env")	
 	if err := viper.ReadInConfig(); err != nil {
-		log.Error("Error reading config file, %s", err)
+		log.Warn("Error reading config file, %s", err)
 	}
 	siteId := viper.Get("LP_SITE")
 	log.Info("Load LP Site id:", "id", siteId)
