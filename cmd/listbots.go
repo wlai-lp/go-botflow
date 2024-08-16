@@ -27,9 +27,10 @@ type bot struct {
 	Agents string
 	Skills string
 }
+const UNASSIGNED = "un_assigned"
+
 
 const listHeight = 14
-const UNASSIGNED = "un_assigned"
 
 var (
 	titleStyle        = lipgloss.NewStyle().MarginLeft(2)
