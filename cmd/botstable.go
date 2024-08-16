@@ -56,7 +56,7 @@ func (m botModel) View() string {
 func showTable(bots []bot) {
 
 	columns := []table.Column{
-		{Title: "Id", Width: 4},
+		{Title: "Id", Width: 40},
 		{Title: "Name", Width: 50},
 		{Title: "Group", Width: 10},
 		{Title: "Agent", Width: 10},
@@ -65,9 +65,9 @@ func showTable(bots []bot) {
 
 	rows := []table.Row{}
 
-	for i, b := range bots {
+	for _, b := range bots {
 		var s [5]string
-		s[0] = fmt.Sprintf("%v",i+1)
+		s[0] = b.ID
 		s[1] = b.Name
 		s[2] = b.Group
 		s[3] = b.Agents

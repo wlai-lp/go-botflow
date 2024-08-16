@@ -176,7 +176,7 @@ func getListOfBots() ([]bot, error) {
 	}
 
 	// get bot access token and orgid
-	// TODO: bearer token flag override
+	sid := fmt.Sprint(viper.Get("LP_SITE"))
 	b := fmt.Sprint(viper.Get("BEARER"))
 	if b == "" {
 		log.Error("bearer token value is empty")
@@ -209,9 +209,23 @@ func getListOfBots() ([]bot, error) {
 		allBots = append(allBots, tempGroup...)
 	}
 
+	// for each bot lookup its agent
+	botAgents := make(map[string]string)
+	for _, v := range allBots {
+		botAgents[v.BotID] = lpapi.GetBotAgentByBotId(lpd, token, orgid, v.BotID)
+	}
+
+	// look up users
+	users := lpapi.GetUsers(lpd, sid, b)
+	log.Info("returned user", "count", len(users))
+
+
+	// look up skills
+
+
 	listOfBots := aggregateBots(allBots)
 	
-	log.Info("list of bots count", "count", listOfBots)
+	log.Info("list of bots count", "count", len(listOfBots))
 
 	// get ungroup list
 	return listOfBots, nil
