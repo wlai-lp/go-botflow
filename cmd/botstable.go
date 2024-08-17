@@ -43,11 +43,11 @@ func (m botModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "q", "ctrl+c":
 			return m, tea.Quit
-		case "enter":			
+		case "enter":
 			// log.Info("Selected", "id", m.table.SelectedRow()[1])
 			return m, tea.Batch(
 				// tea.Printf(lpapi.TestMethod()),
-				tea.Printf(lpapi.GetBotByBotIdTeaCmd(m.table.SelectedRow()[0])),
+				tea.Printf(lpapi.ExportBotByBotIdTeaCmd(m.table.SelectedRow()[0])),
 				// test2(1),
 				tea.Printf("Selected %s!", m.table.SelectedRow()[1]),
 			)
@@ -57,7 +57,7 @@ func (m botModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func test2(i int) tea.Cmd{
+func test2(i int) tea.Cmd {
 	b := i + 5
 	b = b + i
 	return nil
@@ -65,7 +65,7 @@ func test2(i int) tea.Cmd{
 
 func (m botModel) View() string {
 	footer := "\n\n Controls: [↑/↓] Navigate • [Enter] Select • [q] Quit\n"
-	return baseStyle.Render(m.table.View() + footer) + "\n"
+	return baseStyle.Render(m.table.View()+footer) + "\n"
 }
 
 func showTable(bots []lpapi.Bot) {
@@ -88,7 +88,7 @@ func showTable(bots []lpapi.Bot) {
 		s[3] = b.Agents
 		s[4] = b.Skills
 		slice := s[:]
-		rows = append(rows, slice)	
+		rows = append(rows, slice)
 	}
 
 	t := table.New(
@@ -142,7 +142,7 @@ to quickly create a Cobra application.`,
 		access_token = token
 		if err != nil {
 			log.Fatal("Unable to get list of bots")
-		}		
+		}
 
 		log.Info("retrieved all bots", "length", len(bots))
 
