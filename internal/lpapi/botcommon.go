@@ -18,6 +18,17 @@ type Bot struct {
 	Skills string
 }
 
+type app_param struct {
+	SITE_ID string
+	BEARER string
+	ACCESS_TOKEN string
+	ORG_ID string
+	DOMAINS LpDomains
+}
+
+// caching purpose for other ops
+var APP_PARAM app_param
+
 const UNASSIGNED = "un_assigned"
 
 var groupNameByIdMap = make(map[string]string)
@@ -25,24 +36,29 @@ var botAgentsMap = make(map[string]string)
 var agentSkillsMap = make(map[string]string)
 var skillIdToNameMap = make(map[int64]string)
 
-func GetListOfBots(siteId string, bearer string) ([]Bot, error) {
+func GetListOfBots(siteId string, bearer string) (bot []Bot, token string, err error) {
 	start := time.Now()
+	APP_PARAM.SITE_ID = siteId
+	APP_PARAM.BEARER = bearer
 	// check required fields
 	if bearer == "" || siteId == "" {
 		log.Error("missing site and/or bearer token value")
-		return nil, errors.New("site/bearer token value is empty")
+		return nil, "", errors.New("site/bearer token value is empty")
 	}
 
 	// get domain by siteid
 	lpd, err := GetDomain(fmt.Sprint(viper.Get("LP_SITE")))
+	APP_PARAM.DOMAINS = *lpd
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// get bot access token
 	token, orgId, err := GetBotAccessToken(lpd, bearer)
+	APP_PARAM.ACCESS_TOKEN = token
+	APP_PARAM.ORG_ID = orgId
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	log.Info(fmt.Sprintf("token is %v and org is %v", token, orgId))
 
@@ -118,7 +134,7 @@ func GetListOfBots(siteId string, bearer string) ([]Bot, error) {
 	log.Info("list of bots count", "count", len(listOfBots), "execution time", elapsed)
 
 	// get ungroup list
-	return listOfBots, nil
+	return listOfBots, token, nil
 }
 
 func aggregateBots(allBots []GroupBot) []Bot {

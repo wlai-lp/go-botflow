@@ -116,7 +116,7 @@ to quickly create a Cobra application.`,
 		bearer := fmt.Sprint(viper.Get("BEARER"))
 		log.Info("get env params", "site", siteId, "bearer", bearer)
 		
-		bots, err := lpapi.GetListOfBots(siteId, bearer)
+		bots, _, err := lpapi.GetListOfBots(siteId, bearer)
 		if err != nil {
 			log.Fatal("Unable to get list of bots")
 		}

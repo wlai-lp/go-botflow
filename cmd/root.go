@@ -13,7 +13,9 @@ import (
 	// "github.com/spf13/viper"
 )
 
-var name, input, account, bearer, debug string
+// var name, input, account, bearer, debug string
+// this is for all the cmd init flags
+var account string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{

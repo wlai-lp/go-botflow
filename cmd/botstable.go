@@ -17,6 +17,8 @@ import (
 	"github.com/charmbracelet/log"
 )
 
+var siteId, bearer, access_token string
+
 var baseStyle = lipgloss.NewStyle().
 	// Height(20).
 	BorderStyle(lipgloss.RoundedBorder()).
@@ -41,9 +43,13 @@ func (m botModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "q", "ctrl+c":
 			return m, tea.Quit
-		case "enter":
+		case "enter":			
+			// log.Info("Selected", "id", m.table.SelectedRow()[1])
 			return m, tea.Batch(
-				tea.Printf("Let's go to %s!", m.table.SelectedRow()[1]),
+				// tea.Printf(lpapi.TestMethod()),
+				tea.Printf(lpapi.GetBotByBotIdTeaCmd(m.table.SelectedRow()[0])),
+				// test2(1),
+				tea.Printf("Selected %s!", m.table.SelectedRow()[1]),
 			)
 		}
 	}
@@ -51,8 +57,15 @@ func (m botModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+func test2(i int) tea.Cmd{
+	b := i + 5
+	b = b + i
+	return nil
+}
+
 func (m botModel) View() string {
-	return baseStyle.Render(m.table.View()) + "\n"
+	footer := "\n\n Controls: [↑/↓] Navigate • [Enter] Select • [q] Quit\n"
+	return baseStyle.Render(m.table.View() + footer) + "\n"
 }
 
 func showTable(bots []lpapi.Bot) {
@@ -121,11 +134,12 @@ to quickly create a Cobra application.`,
 		// TODO: validate required parameters
 
 		// get paramers
-		siteId := fmt.Sprint(viper.Get("LP_SITE"))
-		bearer := fmt.Sprint(viper.Get("BEARER"))
+		siteId = fmt.Sprint(viper.Get("LP_SITE"))
+		bearer = fmt.Sprint(viper.Get("BEARER"))
 		log.Info("get env params", "site", siteId, "bearer", bearer)
 
-		bots, err := lpapi.GetListOfBots(siteId, bearer)
+		bots, token, err := lpapi.GetListOfBots(siteId, bearer)
+		access_token = token
 		if err != nil {
 			log.Fatal("Unable to get list of bots")
 		}		
