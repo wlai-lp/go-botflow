@@ -11,3 +11,5 @@
 - go run . botstable -B [bearer token] -a [LP site id]
 
 
+# Notes
+- add goreleaser build
